@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Literal
 
-from config_manager import config
-from db_manager import run_log_db
+from utils.config_manager import config
+from utils.db_manager import run_log_db
 
 LOG_TYPES = {"SYSTEM", "EXTERNAL_API", "INTERNAL_API"}
 # 日志等级越大越重要
