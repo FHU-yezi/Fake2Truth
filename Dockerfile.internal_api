@@ -13,6 +13,6 @@ RUN pip install \
     -i https://mirrors.aliyun.com/pypi/simple
 
 COPY utils ./utils
-COPY external_api .
+COPY internal_api .
 
-CMD ["python", "external_api_main.py"]
+CMD ["python", "internal_api_main.py"]

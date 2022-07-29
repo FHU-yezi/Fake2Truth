@@ -11,6 +11,8 @@ sanic = "^22.6.0"
 httpx = "^0.23.0"
 PyYAML = "^6.0"
 motor = "^3.0.0"
+qrcode = "^7.3.1"
+Pillow = "^9.2.0"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.971"

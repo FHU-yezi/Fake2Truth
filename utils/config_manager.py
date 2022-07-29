@@ -16,7 +16,8 @@ _DEFAULT_CONFIG = {
         "email": ""
     },
     "external_api_port": 8080,
-    "internal_api_port": 8081
+    "internal_api_port": 8081,
+    "target_host": "127.0.0.1"
 }
 
 

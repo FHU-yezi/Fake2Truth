@@ -27,3 +27,25 @@ services:
         delay: 5s
         max_attempts: 3
     stop_grace_period: 1s
+  internal_api:
+    image: fake2truth-internal_api:0.1.0
+    build:
+      dockerfile: Dockerfile.internal_api
+    ports:
+      - "8081:8081"
+    networks:
+      - mongodb
+    volumes:
+      - "./config.yaml:/app/config.yaml"
+    environment:
+    - PYTHONUNBUFFERED=1
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    stop_grace_period: 1s

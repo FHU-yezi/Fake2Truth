@@ -5,7 +5,7 @@ from utils.user_data_manager import GetNameByUID
 
 async def AddAccessLog(ip: str, uid: int):
     if uid:
-        name = GetNameByUID(uid)
+        name = await GetNameByUID(uid)
     else:
         name = None
 
