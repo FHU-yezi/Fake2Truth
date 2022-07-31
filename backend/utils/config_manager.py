@@ -15,8 +15,7 @@ _DEFAULT_CONFIG = {
         "app_secret": "",
         "email": ""
     },
-    "external_api_port": 8080,
-    "internal_api_port": 8081,
+    "api_service_port": 8080,
     "target_host": "127.0.0.1"
 }
 

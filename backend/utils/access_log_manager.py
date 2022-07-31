@@ -1,11 +1,11 @@
-from utils.db_manager import access_log_db
 from utils.datetime_helper import GetNowWithoutMileseconds
-from utils.user_data_manager import GetNameByUID
+from utils.db_manager import access_log_db
+from utils.user_data_manager import get_name_by_UID
 
 
-async def AddAccessLog(ip: str, uid: int):
+async def add_access_log(ip: str, uid: int):
     if uid:
-        name = await GetNameByUID(uid)
+        name = await get_name_by_UID(uid)
     else:
         name = None
 
