@@ -7,7 +7,7 @@ from utils.validate_helper import can_be_int
 url = Blueprint("url", url_prefix="/url")
 
 
-def validate_get_handler_body(request):
+def validate_get_handler_body(request) -> bool:
     if not request.json.get("uin"):
         return False
     if not can_be_int(request.json.get("uin")):

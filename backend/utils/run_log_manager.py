@@ -16,9 +16,9 @@ LEVELS = set(LEVELS_TO_NUMS.keys())
 
 
 # TODO: 用更优雅的方式实现类型标注
-def AddRunLog(type_: Literal["SYSTEM", "EXTERNAL_API", "INTERNAL_API"],
-              level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
-              content: str) -> None:
+def add_run_log(type_: Literal["SYSTEM", "EXTERNAL_API", "INTERNAL_API"],
+                level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+                content: str) -> None:
     if type_ not in LOG_TYPES:
         raise ValueError(f"指定的日志类型 {type_} 不存在")
     if level not in LEVELS:
