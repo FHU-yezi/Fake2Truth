@@ -1,6 +1,6 @@
 from sanic import Blueprint
 from sanic.response import json
-from utils.url_manager import generate_URL
+from utils.url_generator import MAPPING
 from utils.user_data_manager import is_UID_exists
 from utils.validate_helper import can_be_int
 
@@ -24,6 +24,7 @@ async def get_handler(request):
     body = request.json
     uin = body.get("uin")
     uid = body.get("uid")
+    type_ = body.get("type")
 
     if not validate_get_handler_body(request):
         return json({
@@ -37,7 +38,14 @@ async def get_handler(request):
             "message": "用户不存在"
         })
 
-    url = generate_URL(uin, uid)
+    if type_ not in MAPPING.keys():
+        return json({
+            "code": 400,
+            "message": "链接类型不存在"
+        })
+
+    generate_func = MAPPING[type_]
+    url = generate_func(uin, uid)
 
     return json({
         "code": 200,

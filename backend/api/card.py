@@ -6,17 +6,21 @@ from utils.validate_helper import can_be_int
 card = Blueprint("card", url_prefix="/card")
 
 
-def get_redirect_url(uin: str) -> str:
-    return ("mqqapi://card/show_pslcard?src_type=internal&version=1"
-            f"&card_type=group&uin={uin}")
+def get_redirect_url(uin: str, type_: str) -> str:
+    if type_ == "user":
+        return ("mqqapi://card/show_pslcard?src_type=internal&version=1"
+                f"&uin={uin}")
+    elif type_ == "group":
+        return ("mqqapi://card/show_pslcard?src_type=internal&version=1"
+                f"&card_type=group&uin={uin}")
+    else:
+        raise ValueError()
 
 
 def validate_pslcard_handler_params(request) -> bool:
     if request.args.get("src_type") != "internal":
         return False
     if request.args.get("version") != "1":
-        return False
-    if request.args.get("card_type") != "group":
         return False
 
     if not can_be_int(request.args.get("uin")):
@@ -26,6 +30,13 @@ def validate_pslcard_handler_params(request) -> bool:
         return False
 
     return True
+
+
+def get_show_pslcard_URL_type(request) -> str:
+    if request.args.get("card_type"):
+        return "group"
+    else:
+        return "user"
 
 
 @card.get("/show_pslcard")
@@ -39,10 +50,12 @@ async def show_pslcard_handler(request):
         })
 
     uid = int(request.args.get("uid"))
+    type_ = get_show_pslcard_URL_type(request)
 
     await add_access_log(
+        type_=type_,
         ip=request.ip,
         uid=uid
     )
 
-    return redirect(get_redirect_url(request.args.get("uin")))
+    return redirect(get_redirect_url(request.args.get("uin"), type_))

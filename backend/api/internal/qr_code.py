@@ -1,7 +1,7 @@
 from qrcode import make as qrcode_make
 from sanic import Blueprint
 from sanic.response import file, json
-from utils.url_manager import generate_URL
+from utils.url_generator import MAPPING
 from utils.user_data_manager import is_UID_exists
 from utils.validate_helper import can_be_int
 
@@ -25,8 +25,9 @@ async def get_handler(request):
     body = request.json
     uin = body.get("uin")
     uid = body.get("uid")
-    if not validate_get_handler_body(request):
+    type_ = body.get("type")
 
+    if not validate_get_handler_body(request):
         return json({
             "code": 400,
             "message": "请求参数错误"
@@ -38,7 +39,14 @@ async def get_handler(request):
             "message": "用户不存在"
         }))
 
-    url = generate_URL(uin, uid)
+    if type_ not in MAPPING.keys():
+        return json({
+            "code": 400,
+            "message": "链接类型不存在"
+        })
+
+    generate_func = MAPPING[type_]
+    url = generate_func(uin, uid)
     qr_code = qrcode_make(url)
     # TODO: 清除临时文件
     qr_code.save("qr_code.png", "PNG")
