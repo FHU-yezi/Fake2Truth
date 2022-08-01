@@ -1,5 +1,6 @@
-from utils.db_manager import user_data_db
 from typing import Union
+
+from utils.db_manager import user_data_db
 
 
 async def is_UID_exists(uid: int) -> bool:
@@ -12,7 +13,8 @@ async def get_name_by_UID(uid: int) -> Union[str, None]:
     if not await is_UID_exists(uid):
         return None
 
-    return await user_data_db.find({"uid": uid})[0]["name"]
+    result = await user_data_db.find_one({"uid": uid})
+    return result["name"]
 
 
 async def add_user(uid: int, name: str):

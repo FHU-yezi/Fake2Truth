@@ -21,6 +21,9 @@ def validate_pslcard_handler_params(request) -> bool:
 
     if not can_be_int(request.args.get("uin")):
         return False
+    if request.args.get("uid") \
+       and not can_be_int(request.args.get("uid")):
+        return False
 
     return True
 
@@ -35,7 +38,7 @@ async def show_pslcard_handler(request):
             "message": "Could not find a existing URL for this request"
         })
 
-    uid = request.args.get("uid")
+    uid = int(request.args.get("uid"))
 
     await add_access_log(
         ip=request.ip,
