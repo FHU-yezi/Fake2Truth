@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Fake2Truth"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = ["FHU-yezi <yehaowei20060411@qq.com>"]
 license = "MIT"
@@ -16,7 +16,7 @@ Pillow = "^9.2.0"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.971"
-flake8 = "^4.0.1"
+flake8 = "^5.0.2"
 yapf = "^0.32.0"
 types-PyYAML = "^6.0.11"
 

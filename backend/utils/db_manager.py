@@ -3,7 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from utils.config_manager import config
 
 
-def InitDB():
+def init_DB():
     connection: AsyncIOMotorClient = AsyncIOMotorClient(
         config["db_address"],
         config["db_port"]
@@ -16,7 +16,7 @@ def GetCollection(name: str):
     return db[name]
 
 
-db = InitDB()
+db = init_DB()
 
 run_log_db = db.run_log
 access_log_db = db.assess_log

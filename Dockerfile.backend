@@ -12,7 +12,6 @@ RUN pip install \
     --quiet \
     -i https://mirrors.aliyun.com/pypi/simple
 
-COPY utils ./utils
-COPY internal_api .
+COPY backend .
 
-CMD ["python", "internal_api_main.py"]
+CMD ["python", "main.py"]
