@@ -10,7 +10,7 @@ services:
     build:
       dockerfile: Dockerfile.backend
     ports:
-      - "8080:8080"
+      - "8604:8604"
     networks:
       - mongodb
     volumes:
