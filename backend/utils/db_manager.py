@@ -18,6 +18,5 @@ def GetCollection(name: str):
 
 db = init_DB()
 
-run_log_db = db.run_log
 access_log_db = db.assess_log
 user_data_db = db.user_data

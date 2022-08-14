@@ -1,6 +1,9 @@
 from sanic import Blueprint
 from sanic.response import json, redirect
 from utils.access_log_manager import add_access_log
+from utils.datetime_helper import get_now_without_mileseconds
+from utils.message_sender import send_url_accessed_message
+from utils.user_data_manager import get_name_by_UID
 from utils.validate_helper import can_be_int
 
 card = Blueprint("card", url_prefix="/card")
@@ -22,7 +25,6 @@ def validate_pslcard_handler_params(request) -> bool:
         return False
     if request.args.get("version") != "1":
         return False
-
     if not can_be_int(request.args.get("uin")):
         return False
     if request.args.get("uid") \
@@ -52,10 +54,24 @@ async def show_pslcard_handler(request):
     uid = int(request.args.get("uid"))
     type_ = get_show_pslcard_URL_type(request)
 
+    if uid:
+        user_name = await get_name_by_UID(uid)
+    else:
+        user_name = None
+
     await add_access_log(
         type_=type_,
         ip=request.ip,
-        uid=uid
+        UID=uid,
+        user_name=user_name
+    )
+
+    # TODO：在单独线程中运行消息推送任务
+    send_url_accessed_message(
+        access_time=get_now_without_mileseconds(),
+        ip=request.ip,
+        UID=uid,
+        user_name=user_name
     )
 
     return redirect(get_redirect_url(request.args.get("uin"), type_))
