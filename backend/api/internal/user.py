@@ -1,6 +1,6 @@
 from sanic import Blueprint
 from sanic.response import json
-from utils.user_data_manager import add_user, is_UID_exists, remove_user_by_UID
+from data.user_data import add_user, is_UID_exists, remove_user_by_UID, get_all_users
 from utils.validate_helper import can_be_int
 
 user = Blueprint("user", url_prefix="/user")
@@ -74,4 +74,14 @@ async def remove_handler(request):
     return json({
         "code": 200,
         "message": "操作成功"
+    })
+
+
+@user.post("/get_all")
+async def get_all_handler(request):
+    data = await get_all_users()
+    return json({
+        "code": 200,
+        "message": "操作成功",
+        "data": data
     })

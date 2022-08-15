@@ -3,7 +3,7 @@ from sanic.response import json, redirect
 from utils.access_log_manager import add_access_log
 from utils.datetime_helper import get_now_without_mileseconds
 from utils.message_sender import send_url_accessed_message
-from utils.user_data_manager import get_name_by_UID
+from data.user_data import get_name_by_UID
 from utils.validate_helper import can_be_int
 from responser.redirect import redirect_to_QQ_group, redirect_to_QQ_user
 

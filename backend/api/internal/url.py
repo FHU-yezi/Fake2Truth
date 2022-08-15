@@ -1,7 +1,7 @@
 from sanic import Blueprint
 from sanic.response import json
 from utils.url_generator import MAPPING
-from utils.user_data_manager import is_UID_exists
+from data.user_data import is_UID_exists
 from utils.validate_helper import can_be_int
 
 url = Blueprint("url", url_prefix="/url")

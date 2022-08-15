@@ -2,7 +2,7 @@ from qrcode import make as qrcode_make
 from sanic import Blueprint
 from sanic.response import file, json
 from utils.url_generator import MAPPING
-from utils.user_data_manager import is_UID_exists
+from data.user_data import is_UID_exists
 from utils.validate_helper import can_be_int
 
 qr_code = Blueprint("qr_code", url_prefix="/qrcode")
