@@ -1,6 +1,6 @@
 from sanic import Blueprint
 from sanic.response import json, redirect
-from utils.access_log_manager import add_access_log
+from data.access_log_data import add_access_log
 from utils.datetime_helper import get_now_without_mileseconds
 from utils.message_sender import send_url_accessed_message
 from data.user_data import get_name_by_UID
@@ -62,7 +62,6 @@ async def show_pslcard_handler(request):
             user_name = None
 
     await add_access_log(
-        type_=type_,
         ip=request.ip,
         UID=UID,
         user_name=user_name
