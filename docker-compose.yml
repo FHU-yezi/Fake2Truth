@@ -6,7 +6,7 @@ networks:
 
 services:
   backend:
-    image: fake2truth-backend:0.4.0
+    image: fake2truth-backend:0.5.0
     build:
       dockerfile: Dockerfile.backend
     ports:
