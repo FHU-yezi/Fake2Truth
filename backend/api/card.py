@@ -48,19 +48,23 @@ async def show_pslcard_handler(request):
             "message": "Could not find a existing URL for this request"
         })
 
-    uid = int(request.args.get("uid"))
+    UID = int(request.args.get("uid"))
     uin = int(request.args.get("uin"))
     type_ = get_show_pslcard_URL_type(request)
+    print(await get_name_by_UID(UID))
 
-    if uid:
-        user_name = await get_name_by_UID(uid)
-    else:
+    if not UID:
         user_name = None
+    else:
+        try:
+            user_name = await get_name_by_UID(UID)
+        except ValueError:  # UID 不存在
+            user_name = None
 
     await add_access_log(
         type_=type_,
         ip=request.ip,
-        UID=uid,
+        UID=UID,
         user_name=user_name
     )
 
@@ -68,7 +72,7 @@ async def show_pslcard_handler(request):
     send_url_accessed_message(
         access_time=get_now_without_mileseconds(),
         ip=request.ip,
-        UID=uid,
+        UID=UID,
         user_name=user_name
     )
 

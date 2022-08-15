@@ -22,8 +22,8 @@ def validate_get_handler_body(request) -> bool:
 @url.post("/get")
 async def get_handler(request):
     body = request.json
-    uin = body.get("uin")
-    uid = body.get("uid")
+    uin = int(body.get("uin"))
+    UID = int(body.get("uid"))
     type_ = body.get("type")
 
     if not validate_get_handler_body(request):
@@ -32,7 +32,7 @@ async def get_handler(request):
             "message": "请求参数错误"
         })
 
-    if uid and not await is_UID_exists(uid):
+    if UID and not await is_UID_exists(UID):
         return json({
             "code": 400,
             "message": "用户不存在"
@@ -45,7 +45,7 @@ async def get_handler(request):
         })
 
     generate_func = MAPPING[type_]
-    url = generate_func(uin, uid)
+    url = generate_func(uin, UID)
 
     return json({
         "code": 200,

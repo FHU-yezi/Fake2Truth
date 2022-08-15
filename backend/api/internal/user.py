@@ -29,7 +29,7 @@ def validate_remove_handler_body(request) -> bool:
 @user.post("/add")
 async def add_handler(request):
     body = request.json
-    uid = body.get("uid")
+    uid = int(body.get("uid"))
     name = body.get("name")
 
     if not validate_add_handler_body(request):
@@ -38,18 +38,18 @@ async def add_handler(request):
             "message": "请求参数错误"
         })
 
-    if await is_UID_exists(uid):
+    try:
+        await add_user(uid, name)
+    except ValueError:
         return json({
             "code": 400,
             "message": "该用户已存在"
         })
-
-    await add_user(uid, name)
-
-    return json({
-        "code": 200,
-        "message": "操作成功"
-    })
+    else:
+        return json({
+            "code": 200,
+            "message": "操作成功"
+        })
 
 
 @user.post("/remove")
@@ -63,18 +63,18 @@ async def remove_handler(request):
             "message": "请求参数错误"
         })
 
-    if not await is_UID_exists(uid):
+    try:
+        await remove_user_by_UID(uid)
+    except ValueError:
         return json({
             "code": 400,
             "message": "用户不存在"
         })
-
-    await remove_user_by_UID(uid)
-
-    return json({
-        "code": 200,
-        "message": "操作成功"
-    })
+    else:
+        return json({
+            "code": 200,
+            "message": "操作成功"
+        })
 
 
 @user.post("/get_all")
