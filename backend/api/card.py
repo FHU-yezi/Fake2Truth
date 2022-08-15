@@ -4,7 +4,7 @@ from data.access_log_data import add_access_log
 from utils.datetime_helper import get_now_without_mileseconds
 from utils.message_sender import send_url_accessed_message
 from data.user_data import get_name_by_UID
-from utils.validate_helper import can_be_int
+from data.hash_data import parse_hash_data
 from responser.redirect import redirect_to_QQ_group, redirect_to_QQ_user
 
 
@@ -22,10 +22,7 @@ def validate_pslcard_handler_params(request) -> bool:
         return False
     if request.args.get("version") != "1":
         return False
-    if not can_be_int(request.args.get("uin")):
-        return False
-    if request.args.get("uid") \
-       and not can_be_int(request.args.get("uid")):
+    if not request.args.get("hash"):
         return False
 
     return True
@@ -48,10 +45,12 @@ async def show_pslcard_handler(request):
             "message": "Could not find a existing URL for this request"
         })
 
-    UID = int(request.args.get("uid"))
-    uin = int(request.args.get("uin"))
+    hash = request.args.get("hash")
+    hash_data = await parse_hash_data(hash)
+
+    UID = hash_data["uid"]
+    uin = hash_data["uin"]
     type_ = get_show_pslcard_URL_type(request)
-    print(await get_name_by_UID(UID))
 
     if not UID:
         user_name = None
@@ -63,6 +62,7 @@ async def show_pslcard_handler(request):
 
     await add_access_log(
         ip=request.ip,
+        hash=hash,
         UID=UID,
         user_name=user_name
     )

@@ -50,8 +50,7 @@ async def get_handler(request):
             "message": "链接类型不存在"
         })
 
-    generate_func = URL_MAPPING[type_]
-    url = generate_func(uin, UID)
+    url = await URL_MAPPING[type_](uin, UID)
 
     return json({
         "code": 200,

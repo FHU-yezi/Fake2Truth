@@ -51,6 +51,6 @@ async def get_handler(request):
             "message": "二维码类型不存在"
         })
 
-    QR_code = QR_CODE_MAPPING[type_](uin, UID)
+    QR_code = await QR_CODE_MAPPING[type_](uin, UID)
 
     return await file(QR_code)

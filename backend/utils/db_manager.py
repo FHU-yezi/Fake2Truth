@@ -20,3 +20,4 @@ db = init_DB()
 
 access_log_db = db.assess_log
 user_data_db = db.user_data
+hash_data_db = db.hash_data
