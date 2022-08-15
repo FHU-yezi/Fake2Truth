@@ -1,8 +1,14 @@
+from data.user_data import is_UID_exists
+from gengertor.url_gengertor import generate_group_URL, generate_user_URL
 from sanic import Blueprint
 from sanic.response import json
-from utils.url_generator import MAPPING
-from data.user_data import is_UID_exists
 from utils.validate_helper import can_be_int
+
+URL_MAPPING = {
+    "user": generate_user_URL,
+    "group": generate_group_URL
+}
+
 
 url = Blueprint("url", url_prefix="/url")
 
@@ -38,13 +44,13 @@ async def get_handler(request):
             "message": "用户不存在"
         })
 
-    if type_ not in MAPPING.keys():
+    if type_ not in URL_MAPPING.keys():
         return json({
             "code": 400,
             "message": "链接类型不存在"
         })
 
-    generate_func = MAPPING[type_]
+    generate_func = URL_MAPPING[type_]
     url = generate_func(uin, UID)
 
     return json({

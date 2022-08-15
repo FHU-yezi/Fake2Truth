@@ -1,9 +1,15 @@
-from qrcode import make as qrcode_make
+from data.user_data import is_UID_exists
+from gengertor.qr_code_generator import (generate_group_QR_code,
+                                         generate_user_QR_code)
 from sanic import Blueprint
 from sanic.response import file, json
-from utils.url_generator import MAPPING
-from data.user_data import is_UID_exists
 from utils.validate_helper import can_be_int
+
+QR_CODE_MAPPING = {
+    "user": generate_user_QR_code,
+    "group": generate_group_QR_code
+}
+
 
 qr_code = Blueprint("qr_code", url_prefix="/qrcode")
 
@@ -39,16 +45,12 @@ async def get_handler(request):
             "message": "用户不存在"
         }))
 
-    if type_ not in MAPPING.keys():
+    if type_ not in QR_CODE_MAPPING.keys():
         return json({
             "code": 400,
-            "message": "链接类型不存在"
+            "message": "二维码类型不存在"
         })
 
-    generate_func = MAPPING[type_]
-    url = generate_func(uin, UID)
-    qr_code = qrcode_make(url)
-    # TODO: 清除临时文件
-    qr_code.save("qr_code.png", "PNG")
+    QR_code = QR_CODE_MAPPING[type_](uin, UID)
 
-    return await file("qr_code.png")
+    return await file(QR_code)

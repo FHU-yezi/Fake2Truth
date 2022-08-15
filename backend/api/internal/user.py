@@ -1,6 +1,6 @@
+from data.user_data import add_user, get_all_users, remove_user_by_UID
 from sanic import Blueprint
 from sanic.response import json
-from data.user_data import add_user, is_UID_exists, remove_user_by_UID, get_all_users
 from utils.validate_helper import can_be_int
 
 user = Blueprint("user", url_prefix="/user")
