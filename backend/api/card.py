@@ -1,16 +1,17 @@
+from random import choice
+
 from data.access_log_data import add_access_log
 from data.hash_data import parse_hash_data
 from data.user_data import get_name_by_UID
-from responser.redirect import redirect_to_QQ_group, redirect_to_QQ_user
+from responser.json_error import JSON_404_error, JSON_500_error, JSON_502_error
 from sanic import Blueprint
 from sanic.response import json
 from utils.datetime_helper import get_now_without_mileseconds
 from utils.message_sender import send_url_accessed_message
 
-REDIRECT_MAPPING = {
-    "user": redirect_to_QQ_user,
-    "group": redirect_to_QQ_group
-}
+ERROR_RESPONSES = [
+    JSON_404_error, JSON_500_error, JSON_502_error
+]
 
 
 card = Blueprint("card", url_prefix="/card")
@@ -74,6 +75,6 @@ async def show_pslcard_handler(request):
         user_name=user_name
     )
 
-    redirect_response = REDIRECT_MAPPING[type_](uin)
+    response = choice(ERROR_RESPONSES)()
 
-    return redirect_response
+    return response
