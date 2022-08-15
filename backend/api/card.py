@@ -5,19 +5,16 @@ from utils.datetime_helper import get_now_without_mileseconds
 from utils.message_sender import send_url_accessed_message
 from utils.user_data_manager import get_name_by_UID
 from utils.validate_helper import can_be_int
+from responser.redirect import redirect_to_QQ_group, redirect_to_QQ_user
+
+
+REDIRECT_MAPPING = {
+    "user": redirect_to_QQ_user,
+    "group": redirect_to_QQ_group
+}
+
 
 card = Blueprint("card", url_prefix="/card")
-
-
-def get_redirect_url(uin: str, type_: str) -> str:
-    if type_ == "user":
-        return ("mqqapi://card/show_pslcard?src_type=internal&version=1"
-                f"&uin={uin}")
-    elif type_ == "group":
-        return ("mqqapi://card/show_pslcard?src_type=internal&version=1"
-                f"&card_type=group&uin={uin}")
-    else:
-        raise ValueError()
 
 
 def validate_pslcard_handler_params(request) -> bool:
@@ -52,6 +49,7 @@ async def show_pslcard_handler(request):
         })
 
     uid = int(request.args.get("uid"))
+    uin = int(request.args.get("uin"))
     type_ = get_show_pslcard_URL_type(request)
 
     if uid:
@@ -74,4 +72,6 @@ async def show_pslcard_handler(request):
         user_name=user_name
     )
 
-    return redirect(get_redirect_url(request.args.get("uin"), type_))
+    redirect_URL = REDIRECT_MAPPING[type_](uin)
+
+    return redirect(redirect_URL)
