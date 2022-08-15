@@ -6,11 +6,11 @@ networks:
 
 services:
   backend:
-    image: fake2truth-backend:0.2.0
+    image: fake2truth-backend:0.3.0
     build:
       dockerfile: Dockerfile.backend
     ports:
-      - "8080:8080"
+      - "8604:8604"
     networks:
       - mongodb
     volumes:
