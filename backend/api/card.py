@@ -1,12 +1,11 @@
-from sanic import Blueprint
-from sanic.response import json, redirect
 from data.access_log_data import add_access_log
+from data.hash_data import parse_hash_data
+from data.user_data import get_name_by_UID
+from responser.redirect import redirect_to_QQ_group, redirect_to_QQ_user
+from sanic import Blueprint
+from sanic.response import json
 from utils.datetime_helper import get_now_without_mileseconds
 from utils.message_sender import send_url_accessed_message
-from data.user_data import get_name_by_UID
-from data.hash_data import parse_hash_data
-from responser.redirect import redirect_to_QQ_group, redirect_to_QQ_user
-
 
 REDIRECT_MAPPING = {
     "user": redirect_to_QQ_user,
@@ -75,6 +74,6 @@ async def show_pslcard_handler(request):
         user_name=user_name
     )
 
-    redirect_URL = REDIRECT_MAPPING[type_](uin)
+    redirect_response = REDIRECT_MAPPING[type_](uin)
 
-    return redirect(redirect_URL)
+    return redirect_response
