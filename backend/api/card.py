@@ -1,23 +1,20 @@
 from sanic import Blueprint
 from sanic.response import json, redirect
-from utils.access_log_manager import add_access_log
+from data.access_log_data import add_access_log
 from utils.datetime_helper import get_now_without_mileseconds
 from utils.message_sender import send_url_accessed_message
-from utils.user_data_manager import get_name_by_UID
-from utils.validate_helper import can_be_int
+from data.user_data import get_name_by_UID
+from data.hash_data import parse_hash_data
+from responser.redirect import redirect_to_QQ_group, redirect_to_QQ_user
+
+
+REDIRECT_MAPPING = {
+    "user": redirect_to_QQ_user,
+    "group": redirect_to_QQ_group
+}
+
 
 card = Blueprint("card", url_prefix="/card")
-
-
-def get_redirect_url(uin: str, type_: str) -> str:
-    if type_ == "user":
-        return ("mqqapi://card/show_pslcard?src_type=internal&version=1"
-                f"&uin={uin}")
-    elif type_ == "group":
-        return ("mqqapi://card/show_pslcard?src_type=internal&version=1"
-                f"&card_type=group&uin={uin}")
-    else:
-        raise ValueError()
 
 
 def validate_pslcard_handler_params(request) -> bool:
@@ -25,10 +22,7 @@ def validate_pslcard_handler_params(request) -> bool:
         return False
     if request.args.get("version") != "1":
         return False
-    if not can_be_int(request.args.get("uin")):
-        return False
-    if request.args.get("uid") \
-       and not can_be_int(request.args.get("uid")):
+    if not request.args.get("hash"):
         return False
 
     return True
@@ -51,18 +45,25 @@ async def show_pslcard_handler(request):
             "message": "Could not find a existing URL for this request"
         })
 
-    uid = int(request.args.get("uid"))
+    hash = request.args.get("hash")
+    hash_data = await parse_hash_data(hash)
+
+    UID = hash_data["uid"]
+    uin = hash_data["uin"]
     type_ = get_show_pslcard_URL_type(request)
 
-    if uid:
-        user_name = await get_name_by_UID(uid)
-    else:
+    if not UID:
         user_name = None
+    else:
+        try:
+            user_name = await get_name_by_UID(UID)
+        except ValueError:  # UID 不存在
+            user_name = None
 
     await add_access_log(
-        type_=type_,
         ip=request.ip,
-        UID=uid,
+        hash=hash,
+        UID=UID,
         user_name=user_name
     )
 
@@ -70,8 +71,10 @@ async def show_pslcard_handler(request):
     send_url_accessed_message(
         access_time=get_now_without_mileseconds(),
         ip=request.ip,
-        UID=uid,
+        UID=UID,
         user_name=user_name
     )
 
-    return redirect(get_redirect_url(request.args.get("uin"), type_))
+    redirect_URL = REDIRECT_MAPPING[type_](uin)
+
+    return redirect(redirect_URL)

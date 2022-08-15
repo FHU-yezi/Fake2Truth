@@ -6,11 +6,11 @@ from yaml import dump as yaml_dump
 from yaml import load as yaml_load
 
 _DEFAULT_CONFIG = {
-    "db_address": "localhost",
+    "db_address": "mongodb",
     "db_port": 27017,
     "minimum_record_log_level": "DEBUG",
     "minimum_print_log_level": "INFO",
-    "api_service_port": 8080,
+    "api_service_port": 8604,
     "target_host": "127.0.0.1",
     "message_sender": {
         "app_id": "",
